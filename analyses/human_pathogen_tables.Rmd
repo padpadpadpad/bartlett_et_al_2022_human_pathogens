@@ -1,0 +1,79 @@
+---
+title: "Reading in and manipulating the datasets from Bartlett et al. 2022 in R"
+author: "Daniel Padfield"
+date: "03/07/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE)
+```
+
+## Dataset of bacterial human pathogens
+
+We present a comprehensive list of known bacterial pathogens known to cause infectious symptoms in humans. A summary of all the datasets used and produced are summarised in this document.
+
+### Load in packages
+
+First we will load in the R packages used in the script.
+
+```{r package_setup, message=FALSE}
+# load packages
+library(openxlsx)
+library(tidyverse)
+library(janitor)
+```
+
+### 1. Taylor _et al._
+
+Taylor _et al._ reported 538 bacterial pathogens in 2001. We took this list as a starting point, and added year of description for each species, removed not validly described species and checked for name changes using the ‘List of Prokaryotic names with Standing in Nomenclature’ from [LPSN](https://lpsn.dsmz.de/). After checking, there were 528 human pathogens that met our definition of a pathogen.
+
+After initial cleaning (see code below), the column names in this spreadsheet are:
+
+- genus: genus of the pathogen
+- species: species name of the pathogen
+- year: year the pathogen was first described
+- status: whether the pathogen is Established or Putative. All pathogens in this list are classified as Established
+- original_description_and_or_relevant_clinical_description: reference of where the pathogen was described
+- old_name: the old name if it has now been reclassified
+- source: source of the data. Here is `taylor`
+
+```{r taylor}
+# read in Taylor et al dataset from GitHub
+d_taylor <- rio::import('https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/raw/master/data/bacteria_human_pathogens.xlsx', sheet = '1 Taylor et al', range = 'A1:F529') %>%
+  clean_names() %>%
+  mutate(source = 'taylor') %>%
+  rename(original_description_and_or_relevant_clinical_description = x5,
+         status = 4)
+
+# show table without reference column
+head(select(d_taylor, -original_description_and_or_relevant_clinical_description))
+```
+### 2. Munson & Carroll
+
+Three papers published by Munson and Carroll compiled new bacterial species associated with humans described in the years 2012 to 2020, from which all species meeting our definitions were taken. From these papers, 85 species met our definitions of a bacterial human pathogen.
+
+After initial cleaning (see code below), the column names in this spreadsheet are:
+
+- genus: genus of the pathogen
+- species: species name of the pathogen
+- year: year the pathogen was first described
+- status: whether the pathogen is Established or Putative
+- original_description_and_or_relevant_clinical_description: reference of where the pathogen was described
+- source: source of the data. Here is `munson`
+
+```{r munson}
+# read in Munson & Carroll dataset from GitHub
+d_munson <- rio::import('https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/raw/master/data/bacteria_human_pathogens.xlsx', sheet = '2 Munson and Carroll', range = 'A1:E86') %>%
+  janitor::clean_names() %>%
+  mutate(source = 'munson')
+
+head(select(d_munson, -original_description_and_or_relevant_clinical_description))
+```
+
+## References
+
+- Taylor LH, Latham SM, Woolhouse ME. Risk factors for human disease emergence. Philosophical Transactions of the Royal Society of London Series B: Biological Sciences. 2001;356(1411):983-9.
+- Munson E, Carroll KC. What's in a name? New bacterial species and changes to taxonomic status from 2012 through 2015. Journal of clinical microbiology. 2017;55(1):24-42.
+- Munson E, Carroll KC. An update on the novel genera and species and revised taxonomic status of bacterial organisms described in 2016 and 2017. Journal of clinical microbiology. 2019;57(2):e01181-18.
+- Munson E, Carroll KC. Summary of novel bacterial isolates derived from human clinical specimens and nomenclature revisions published in 2018 and 2019. Journal of clinical microbiology. 2020;59(2):e01309-20.
