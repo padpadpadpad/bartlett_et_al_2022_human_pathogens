@@ -1,17 +1,19 @@
 ---
-title: "Reading in and manipulating the datasets from Bartlett et al. 2022 in R"
+title: "Reading in and manipulating the list of bacterial human pathogens from Bartlett et al. 2022 in R"
 author: "Daniel Padfield"
 date: "03/07/2022"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message=FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, tidy.opts=list(width.cutoff=80), tidy = TRUE)
 ```
 
 ## Dataset of bacterial human pathogens
 
 We present a comprehensive list of known bacterial pathogens known to cause infectious symptoms in humans. A summary of all the datasets used and produced are summarised in this document.
+
+The dataset is available on [GitHub](https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/tree/master/data), but to allow the code to fit cleanly in these walkthroughs we created a shortened URL for the file (https://shorturl.at/hiwy7)
 
 ### Load in packages
 
@@ -38,9 +40,12 @@ After initial cleaning (see code below), the column names in this spreadsheet ar
 - old_name: the old name if it has now been reclassified
 - source: source of the data. Here is `taylor`
 
-```{r taylor}
+```{r taylor, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
+# set url
+url <- "https://shorturl.at/hiwy7"
+
 # read in Taylor et al dataset from GitHub
-d_taylor <- rio::import('https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/raw/master/data/bacteria_human_pathogens.xlsx', sheet = '1 Taylor et al', range = 'A1:F529') %>%
+d_taylor <- rio::import(url, sheet = '1 Taylor et al', range = 'A1:F529') %>%
   clean_names() %>%
   mutate(source = 'taylor') %>%
   rename(original_description_and_or_relevant_clinical_description = x5,
@@ -49,9 +54,10 @@ d_taylor <- rio::import('https://github.com/padpadpadpad/bartlett_et_al_2022_hum
 # show table without reference column
 head(select(d_taylor, -original_description_and_or_relevant_clinical_description))
 ```
+
 ### 2. Munson & Carroll
 
-Three papers published by Munson and Carroll compiled new bacterial species associated with humans described in the years 2012 to 2020, from which all species meeting our definitions were taken. From these papers, 85 species met our definitions of a bacterial human pathogen.
+Three papers published by Munson and Carroll compiled new bacterial species associated with humans described in the years 2012 to 2019, from which all species meeting our definitions were taken. From these papers, 85 species met our definitions of a bacterial human pathogen.
 
 After initial cleaning (see code below), the column names in this spreadsheet are:
 
@@ -64,11 +70,110 @@ After initial cleaning (see code below), the column names in this spreadsheet ar
 
 ```{r munson}
 # read in Munson & Carroll dataset from GitHub
-d_munson <- rio::import('https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/raw/master/data/bacteria_human_pathogens.xlsx', sheet = '2 Munson and Carroll', range = 'A1:E86') %>%
+d_munson <- rio::import(url, sheet = '2 Munson and Carroll', range = 'A1:E86') %>%
   janitor::clean_names() %>%
   mutate(source = 'munson')
 
 head(select(d_munson, -original_description_and_or_relevant_clinical_description))
+```
+
+### 3. IJSEM
+
+We screened new species published in the International Journal of Systematic and Evolutionary Microbiology and the bimonthly published series “List of new names and new combinations previously effectively, but not validly, published” in the same journal which lists species described in other journals. We used this approach to find newly described pathogen species in the period 1997-2011 and 2020. Using this approach, 346 species met our definitions of a bacterial human pathogen.
+
+After initial cleaning (see code below), the column names in this spreadsheet are:
+
+- genus: genus of the pathogen
+- species: species name of the pathogen
+- year: year the pathogen was first described
+- status: whether the pathogen is Established or Putative
+- original_description_and_or_relevant_clinical_description: reference of where the pathogen was described
+- old_name: the old name if it has now been reclassified
+- source: source of the data. Here is `ijsem`
+
+```{r ijsem}
+# read in ijsem dataset from GitHub
+d_ijsem <- rio::import(url, sheet = '3 IJSEM', range = 'A1:F347') %>%
+  janitor::clean_names() %>%
+  mutate(source = 'ijsem')
+
+head(select(d_ijsem, -original_description_and_or_relevant_clinical_description))
+```
+### 4. Google Scholar
+
+We performed ad hoc searches using Google Scholar, limiting our searches to peer-reviewed literature in the English language. We did not use mentions of human infection without a primary reference. Using this approach, 260 species met our definitions of a bacterial human pathogen.
+
+After initial cleaning (see code below), the column names in this spreadsheet are:
+
+- genus: genus of the pathogen
+- species: species name of the pathogen
+- year: year the pathogen was first described
+- status: whether the pathogen is Established or Putative
+- original_description_and_or_relevant_clinical_description: reference of where the pathogen was described
+- source: source of the data. Here is `scholar`
+
+```{r google_scholar}
+# read in google scholar dataset from GitHub
+d_scholar <- rio::import(url, sheet = '4 Google Scholar', range = 'A1:E261') %>%
+  janitor::clean_names() %>%
+  mutate(source = 'google_scholar')
+
+head(select(d_scholar, -original_description_and_or_relevant_clinical_description))
+```
+### 5. Shaw _et al._
+
+The pathogen species identified from approaches 1-4 were compared with the list by Shaw _et al._ resulting in an additional 409 species of which 294 met our criteria 
+
+After initial cleaning (see code below), the column names in this spreadsheet are:
+
+- genus: genus of the pathogen
+- species: species name of the pathogen
+- year: year the pathogen was first described
+- status: whether the pathogen is Established or Putative
+- original_description_and_or_relevant_clinical_description: reference of where the pathogen was described
+- source: source of the data. Here is `shaw`
+
+```{r shaw_et_al}
+# read in google scholar dataset from GitHub
+d_shaw <- rio::import(url, sheet = '5 Shaw et al', range = 'A1:E295') %>%
+  janitor::clean_names() %>%
+  mutate(source = 'shaw')
+
+head(select(d_shaw, -original_description_and_or_relevant_clinical_description))
+```
+This process makes up the whole list, and we have shown how each list can be read into R.
+
+We can bind them all together easily.
+
+```{r bind}
+d_all <- bind_rows(d_taylor, d_munson, d_ijsem, d_scholar, d_shaw)
+nrow(d_all)
+```
+
+Alternatively we can just read in the sheet with the complete list which also includes the higher taxonomy for each pathogen (derived using [taxize](https://docs.ropensci.org/taxize/index.html))
+
+Overall we found 1513 species that fit our definition of a human pathogen.
+
+After initial cleaning (see code below), the column names in this spreadsheet are:
+
+- superkingdom: kingdom of the pathogen
+- phylum: phylum of the pathogen
+- class: class of the pathofen
+- order: order of the pathogen
+- family: family of the pathogen
+- genus: genus of the pathogen
+- species: species name of the pathogen
+- year: year the pathogen was first described
+- status: whether the pathogen is Established or Putative
+- reference: reference of where the pathogen was described
+
+```{r all}
+d_all <- rio::import(url, sheet = 'Full List', range = 'A1:J1514') %>%
+  janitor::clean_names()
+
+select(d_all, -reference) %>%
+  head()
+
 ```
 
 ## References
@@ -77,3 +182,4 @@ head(select(d_munson, -original_description_and_or_relevant_clinical_description
 - Munson E, Carroll KC. What's in a name? New bacterial species and changes to taxonomic status from 2012 through 2015. Journal of clinical microbiology. 2017;55(1):24-42.
 - Munson E, Carroll KC. An update on the novel genera and species and revised taxonomic status of bacterial organisms described in 2016 and 2017. Journal of clinical microbiology. 2019;57(2):e01181-18.
 - Munson E, Carroll KC. Summary of novel bacterial isolates derived from human clinical specimens and nomenclature revisions published in 2018 and 2019. Journal of clinical microbiology. 2020;59(2):e01309-20.
+- Shaw LP, Wang AD, Dylus D, Meier M, Pogacnik G, Dessimoz C, et al. The phylogenetic range of bacterial and viral pathogens of vertebrates. Mol Ecol. 2020;29(17):3361-79.
