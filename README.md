@@ -8,7 +8,7 @@ Through combining a pragmatic definition of pathogenicity with an extensive sear
 
 ### For general use
 
-- The dataset can be downloaded using the following [link](https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/raw/master/data/bacteria_human_pathogens.xlsx)
+- The dataset can be downloaded using the following [link](https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/raw/master/data/bacteria_human_pathogens.xlsx). Information of what the different sheets are and what the columns mean in each sheet can be found [here](https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/blob/master/analyses/human_pathogen_tables.pdf)
 
 ### Specifically in R
 
