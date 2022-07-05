@@ -6,7 +6,7 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, tidy.opts=list(width.cutoff=80), tidy = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, tidy.opts=list(width.cutoff=60), tidy = TRUE)
 ```
 
 ## Dataset of bacterial human pathogens
@@ -21,7 +21,7 @@ First we will load in the R packages used in the script.
 
 ```{r package_setup, message=FALSE}
 # load packages
-library(openxlsx)
+library(rio)
 library(tidyverse)
 library(janitor)
 ```
