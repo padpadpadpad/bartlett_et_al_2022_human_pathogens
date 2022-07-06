@@ -18,4 +18,4 @@ Through combining a pragmatic definition of pathogenicity with an extensive sear
 
 - Examples on how to access each sheet of the dataset through R are available [here](https://htmlpreview.github.io/?https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/blob/master/analyses/human_pathogen_tables.html).
 - Figure 2, 3 and Table 1 can be recreated from the workthrough [here](https://htmlpreview.github.io/?https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/blob/master/analyses/pathogens_across_taxa.html).
-- The code to visualise the phylogenetic distribution of pathogens and the estimation of phylogenetic signal can be seen [here](https://htmlpreview.github.io/?https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/blob/master/analyses/pathogens_phylogeny.html).
+- The code to visualise the phylogenetic distribution of pathogens and the estimation of phylogenetic signal can be seen [here](https://htmlpreview.github.io/?https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/blob/master/analyses/pathogen_phylogeny.html).
