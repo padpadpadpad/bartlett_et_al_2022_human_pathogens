@@ -2,18 +2,22 @@
 title: "Visualising the phylogenetic distribution of bacterial human pathogens."
 author: "Daniel Padfield"
 date: "05/07/2022"
-output: pdf_document
+output: 
+  html_document:
+    code_folding: show
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, tidy.opts=list(width.cutoff=50), tidy = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, tidy.opts=list(width.cutoff=50), tidy = TRUE, warning = FALSE)
 ```
 
 ## Dataset of bacterial human pathogens
 
 We present a comprehensive list of known bacterial pathogens known to cause infectious symptoms in humans. A summary of all the datasets used and produced are summarised in this document.
 
-The dataset is available on [GitHub](https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/tree/master/data), but to allow the code to fit cleanly in these walkthroughs we created a shortened URL for the file (https://shorturl.at/hiwy7)
+The dataset is available on [GitHub](https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/tree/master/data), but to allow the code to fit cleanly in these walkthroughs we created a shortened URL for the file (https://shorturl.at/hiwy7).
+
+This work-through recreates Figure 4 and Table 2 of the manuscript. It shows how to we linked the GTDB and NCBI taxonomies of our pathogen list and how we plotted these on a phylogenetic tree of bacteria produced by GTDB.
 
 ### Load in packages and data
 
@@ -64,7 +68,7 @@ taxonomy <- read_tsv('bac120_metadata_r207.tsv', col_names = TRUE) %>%
   select(accession, gtdb_taxonomy, ncbi_taxonomy) 
 ```
 
-We can then remove all entries that are not present in the phylogenetic tree and split the taxonomies into each phylogenetic level.
+We can then remove all entries that are not present in the phylogenetic tree and split the taxonomies into each phylogenetic level. Finally we will keep only one entry of each NCBI species in GTDB database to make it easier to assign each member of our pathogen list a GTDB accession number.
 
 ```{r gtdb_clean}
 taxonomy <- filter(taxonomy, accession %in% tree$tip.label) %>%
@@ -74,5 +78,165 @@ taxonomy <- filter(taxonomy, accession %in% tree$tip.label) %>%
   mutate(across(kingdom:species, function(x){gsub('.*__', '', x)})) %>%
   separate(ncbi_taxonomy, c('ncbi_kingdom', 'ncbi_phylum', 'ncbi_class', 'ncbi_order', 'ncbi_family', 'ncbi_genus', 'ncbi_species'), sep = ';') %>%
   mutate(across(ncbi_kingdom:ncbi_species, function(x){gsub('.*__', '', x)}))
+
+# keep only single member of each NCBI species in the taxonomy
+ncbi_taxonomy <- taxonomy %>%
+  group_by(ncbi_species) %>%
+  slice_head(n = 1) %>%
+  ungroup()
+
+```
+
+
+### Load in pathogen list
+
+We can read in the pathogen list and rename the taxonomy columns to be the same as the ones in the GTDB taxonomy. We also need to concatenate genus and species together for the species column.
+
+```{r load_pathogen_list}
+# set url
+url <- "https://shorturl.at/hiwy7"
+
+d_pathogens <- rio::import(url, sheet = 'Full List', range = 'A1:J1514') %>%
+  janitor::clean_names() %>%
+  select(superkingdom:species, year, status) %>%
+  rename_with(., function(x){paste('ncbi_', x, sep = '')}, superkingdom:species) %>%
+  rename(ncbi_kingdom = ncbi_superkingdom) %>%
+  mutate(ncbi_species = paste(ncbi_genus, ncbi_species, sep = ' '))
+
+colnames(d_pathogens)
+
+```
+
+From trying to link GTDB NCBI taxonomy to the NCBI taxonomy assigned by [taxize](https://docs.ropensci.org/taxize/index.html), we noticed some minor naming discrepancies in species names that we corrected in our pathogen dataset just to allow easy linking between datasets. These changes are not maintained anywhere and are just to allow the tree to be plotted effectively.
+
+```{r name_changes}
+# make some specific changes to ncbi species based on mismatches
+d_pathogens <- mutate(d_pathogens, ncbi_species = ifelse(ncbi_species == 'Neoehrlichia mikurensis', 'Candidatus Neoehrlichia mikurensis', ncbi_species),
+                      ncbi_species = ifelse(ncbi_species == 'Catabacter hongkongensis', 'Christensenella hongkongensis', ncbi_species),
+                      ncbi_species = ifelse(ncbi_species == 'Chlamydophila psittaci', 'Chlamydia psittaci', ncbi_species),
+                      ncbi_species = ifelse(ncbi_species == 'Chlamydophila pneumoniae', 'Chlamydia pneumoniae', ncbi_species),
+                      ncbi_species = ifelse(ncbi_species == 'Faecalicatena Contorta contorta', 'Faecalicatena contorta', ncbi_species),
+                      ncbi_species = ifelse(ncbi_species == 'Metamycoplasma hominis', 'Mycoplasma hominis', ncbi_species),
+                      ncbi_species = ifelse(ncbi_species == 'Metamycoplasma salivarium', 'Mycoplasma salivarium', ncbi_species),
+                      ncbi_species = ifelse(ncbi_species == 'Mycoplasmoides genitalium', 'Mycoplasma genitalium', ncbi_species),
+                      ncbi_species = ifelse(ncbi_species == 'Mycoplasmoides pneumoniae', 'Mycoplasma pneumoniae', ncbi_species))
+
+```
+
+### Linking GTDB taxonomy with pathogen list
+
+We can link the GTDB taxonomy to our pathogen list (based on NCBI taxonomy). The aim of linking these dataframes is to give each member of our pathogen list a tip.label on the phylogenetic tree so we can visualise the distribution of pathogens on the phylogenetic tree. 
+
+Ideally each NCBI species name in our pathogen list would be present in the NCBI species names of an accession of the GTDB database. However, as we are interested in visualising the tree at higher taxonomic levels (Order), we can assign each species in our list to an accession number of something in the same genus (or family if there are also no hits there).
+
+```{r link_dataframes}
+# add in gtdb taxonomy in stages
+
+# first we will check for exact species matches
+d_pathogen_species <- left_join(d_pathogens, select(ncbi_taxonomy, accession:species, ncbi_species)) %>%
+  filter(!is.na(species))
+nrow(d_pathogen_species)/nrow(d_pathogens)
+
+# next we will filter instances where there is no match for species, and see if they have an exact genus match
+d_pathogen_genus <- filter(d_pathogens, ! ncbi_species %in% d_pathogen_species$ncbi_species) %>%
+  # join with ncbi_taxonomy where we only have one entry for each genus
+  left_join(., ncbi_taxonomy %>%
+              group_by(ncbi_genus) %>%
+              slice_head(n = 1) %>%
+              ungroup() %>%
+              select(accession:species, ncbi_genus)) %>%
+  filter(!is.na(genus))
+nrow(d_pathogen_genus)/nrow(d_pathogens)
+
+# next we filter any instances which did not match at the species or genus level and see if there is family match
+d_pathogen_family <- filter(d_pathogens, ! ncbi_species %in% c(d_pathogen_species$ncbi_species, d_pathogen_genus$ncbi_species)) %>%
+  # join with ncbi_taxonomy where we only have one entry for each family
+  left_join(., ncbi_taxonomy %>%
+              group_by(ncbi_family) %>%
+              slice_head(n = 1) %>%
+              ungroup() %>%
+              select(accession:species, ncbi_family)) %>%
+  filter(!is.na(family))
+nrow(d_pathogen_family)/nrow(d_pathogens)
+
+# all assigned
+(nrow(d_pathogen_species) + nrow(d_pathogen_genus) + nrow(d_pathogen_family))/nrow(d_pathogens) 
+
+# create a new pathogen list this time with accession numbers and taxonomy that links GTDB and NCBI taxonomy
+d_pathogens2 <- bind_rows(d_pathogen_species, d_pathogen_genus, d_pathogen_family)
+```
+
+So ~75% of the species in our pathogen list had a perfect match to the NCBI taxonomy in the GTDB metadata file, 24% linked at the genus level and then the final few had exact matches at the Family level. Not bad.
+
+### Plot tree
+
+We can now plot the tree. We are plotting the tree using [ggtree](https://guangchuangyu.github.io/ggtree-book/chapter-ggtree.html) which has great documentation online.
+
+We are going to plot the tree at the Class level (where each tip represents a unique class), colour the branches by the Phyla that contain a bacterial human pathogen, and have points at the tips that represent how many pathogen species each Class has.
+
+```{r plot_tree, fig.width = 12, fig.height = 12}
+# what phyla are in the pathogen list
+d_phyla_pathogens <- group_by(d_pathogens2, ncbi_phylum) %>%
+  tally()
+
+# filter GTDB taxonomy to only keep one member of each class
+taxonomy_filtered <- taxonomy %>%
+  group_by(class) %>%
+  slice_head(n = 1) %>%
+  ungroup()
+
+# subset tree to keep only accession numbers in the filtered taxonomy dataset
+tree_sub <- keep.tip(tree, taxonomy_filtered$accession)
+
+# make sure accessions numbers align with tip labels
+tip_labels <- tibble(accession = tree_sub$tip.label) %>%
+  left_join(., taxonomy_filtered)
+
+# make tip labels class
+tree_sub$tip.label <- tip_labels$class
+
+# column for whether the phylum has a pathogenic species or not
+taxonomy_filtered <- mutate(taxonomy_filtered, group = ifelse(ncbi_phylum %in% d_phyla_pathogens$ncbi_phylum, ncbi_phylum, 'other'))
+
+# group tip labels together in terms of whether the phylum has a pathogenic species or not
+# this allows for colouring of branches in the phylogenetic tree
+to_group <- split(taxonomy_filtered$class, taxonomy_filtered$group)
+tree_sub2 <- groupOTU(tree_sub, to_group)
+
+# create colour palette
+colour_count <- length(unique(taxonomy_filtered$group)) # number of levels
+cols <- c(colorRampPalette(brewer.pal(11, "Spectral"))(nrow(d_phyla_pathogens)), 'grey')
+names(cols) <- c(d_phyla_pathogens$ncbi_phylum, 'other')
+
+# first only plot taxonomy
+tree_plot <- ggtree(tree_sub2, layout = 'circular', branch.length = 'none', aes(col = group)) +
+  scale_color_manual('Phylum', values = cols) +
+  guides(color = guide_legend(override.aes = list(size = 5)))
+unique(taxonomy_filtered$order) %>% length()
+
+# tally number of pathogen species in each class
+d_pathogens_class <- group_by(d_pathogens2, class) %>%
+  tally()
+
+# make metadata
+d_meta <- tibble(class = tree_sub$tip.label) %>%
+  left_join(d_pathogens_class) %>%
+  mutate(n2 = replace_na(n, 0))
+d_meta2 <- filter(d_meta, !is.na(n))
+
+# create final tree plot
+tree_plot2 <- tree_plot %<+% d_meta2 +
+  new_scale_color() +
+  geom_tippoint(aes(col = n), position = position_nudge(1), size = 4, na.rm = TRUE) +
+  scale_colour_viridis_c('Number of pathogen\nspecies in each GTDB\nClass', na.value=NA) +
+  geom_tiplab(aes(subset=(label %in% d_meta2$ncbi_class)), offset = 2) +
+  theme(plot.margin = margin(0, 0, 0, 0, "cm"),
+        legend.box.margin = margin(0, 0, 0, 2, "cm"),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 12))
+
+tree_plot2
+
+ggsave('Figure_1.png', tree_plot2, width = 12, height = 12)
 
 ```

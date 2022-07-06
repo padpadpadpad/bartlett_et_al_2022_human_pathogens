@@ -2,7 +2,9 @@
 title: "Looking at the number of bacterial human pathogens across taxa."
 author: "Daniel Padfield"
 date: "04/07/2022"
-output: pdf_document
+output: 
+  html_document:
+    code_folding: show
 ---
 
 ```{r setup, include=FALSE}

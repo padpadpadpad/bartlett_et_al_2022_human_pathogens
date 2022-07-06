@@ -2,7 +2,9 @@
 title: "Reading in and manipulating the list of bacterial human pathogens from Bartlett et al. 2022 in R"
 author: "Daniel Padfield"
 date: "03/07/2022"
-output: pdf_document
+output: 
+  html_document:
+    code_folding: show
 ---
 
 ```{r setup, include=FALSE}
