@@ -30,6 +30,7 @@ library(ggtree)
 library(ape)
 library(RColorBrewer)
 library(ggnewscale)
+library(gt)
 ```
 
 ### Load in data from GTDB
@@ -238,5 +239,310 @@ tree_plot2 <- tree_plot %<+% d_meta2 +
 tree_plot2
 
 ggsave('Figure_1.png', tree_plot2, width = 12, height = 12)
+
+```
+
+### Estimating phylogenetic signal of pathogen presence
+
+To examine any clustering in pathogens evolution across the phylogeny, we can estimate phylogenetic signal of the binary trait (tip contains pathogen: yes or no). To do this, we estimated the [delta-statistic](https://github.com/mrborges23/delta_statistic) which is specifically designed to measure phylogenetic signal in binary traits. 
+
+As phylogenetic signal can vary at different taxonomic levels, we will calculate the delta statistic from the Order to Genus level. For each calculation, we will permute a random distribution of the delta statistic by shuffling the tips and recalculating delta 1000 times. Significant phylogenetic signal is determined to be present if the proportion of random delta calculations greater than the actual estimated delta is less than 0.05.
+
+We will do the analyses on the Order level data first.
+
+```{r order_signal, eval = FALSE}
+# source script used for calculating the delta statistic
+source('https://github.com/mrborges23/delta_statistic/raw/master/code.R')
+
+# set number of bootstraps
+n_boots = 1000
+
+#-------------#
+# 1. Order ####
+#-------------#
+
+# use an order level tree
+taxonomy_order <- taxonomy %>%
+  group_by(order) %>%
+  # keep only one member of each order
+  slice_head(n = 1) %>%
+  ungroup() %>%
+  select(accession, kingdom:genus)
+# 1460 orders
+
+# subset tree to only have those orders included
+tree_order <- keep.tip(tree, taxonomy_order$accession)
+tree_order
+
+# add pathogen status onto this dataframe
+d_pathogens_signal <- group_by(d_pathogens2, order) %>%
+  tally(name = 'num_pathogens')
+# 69 orders containing pathogens
+
+# bind pathogen and taxonomy dataframes and code for pathogen, yes or no
+taxonomy_order <- left_join(taxonomy_order, d_pathogens_signal) %>%
+  mutate(num_pathogens = replace_na(num_pathogens, 0),
+         pathogen = ifelse(num_pathogens == 0, 'no', 'yes'))
+group_by(taxonomy_order, pathogen) %>%
+  tally()
+
+# reorder data frame so tip labels align with the dataframe
+taxonomy_order <- left_join(tibble(accession = tree_order$tip.label), taxonomy_order) %>%
+  data.frame()
+
+# check tip labels match and node labels are unique
+sum(tree_order$tip.label == taxonomy_order$accession)
+# rename node labels in case they cause a random issue
+tree_order$node.label <- paste('node', 1:length(tree_order$node.label), sep = '_')
+
+# estimate delta statistic - follow recommendations from https://github.com/mrborges23/delta_statistic
+pathogen_vec <- taxonomy_order$pathogen
+tree_order$edge.length[tree_order$edge.length==0] <- quantile(tree_order$edge.length,0.1)*0.1
+deltaA_order <- delta(pathogen_vec,tree_order,0.1,0.0589,10000,10,100)
+
+# calculate random deltas for Order
+random_delta <- tibble(boot_num = 1:n_boots)
+random_delta$trait = NA
+
+# create randomly sampled pathogen vector
+for(i in 1:n_boots){
+  random_delta$trait[[i]] <- data.frame(trait = sample(pathogen_vec))
+}
+
+# run this in a multisession using furrr::future_map
+plan(multisession, workers = 3)
+
+random_delta <- mutate(random_delta, output = furrr::future_map(trait, ~delta(.x$trait, tree_order, 0.1,0.0589,10000,10,10), .options = furrr_options(seed = 42)))
+
+random_delta <- select(random_delta, boot_num, output) %>% unnest(output)
+
+# calculate p value
+p_value <- sum(random_delta$output>deltaA_order)/nrow(random_delta)
+
+d_order_delta <- data.frame(taxonomic_level = 'order', statistic = 'delta', value = deltaA_order, p_val = sum(random_delta$output>deltaA_order)/nrow(random_delta))
+
+d_order_delta_boot <- mutate(random_delta, taxonomic_level = 'order')
+```
+
+Next we can do the same at the Family Level.
+
+```{r signal_family, eval = FALSE}
+# use an family level tree
+taxonomy_family <- taxonomy_species %>%
+  group_by(family) %>%
+  # keep only one member of each family
+  slice_head(n = 1) %>%
+  ungroup() %>%
+  select(accession, kingdom:genus)
+# 3650 familys
+
+# subset tree to only have those families included
+tree_family <- keep.tip(tree, taxonomy_family$accession)
+tree_family
+
+# add pathogen status onto this dataframe
+d_pathogens_signal <- group_by(d_pathogens2, family) %>%
+  tally(name = 'num_pathogens')
+# 131 familys containing pathogens
+
+# combine gtdb taxonomy and pathogen datasets
+taxonomy_family <- left_join(taxonomy_family, d_pathogens_signal) %>%
+  mutate(num_pathogens = replace_na(num_pathogens, 0),
+         pathogen = ifelse(num_pathogens == 0, 'no', 'yes'))
+
+# reorder data frame to align with tip labels
+taxonomy_family <- left_join(tibble(accession = tree_family$tip.label), taxonomy_family) %>%
+  data.frame()
+
+# check tip labels match and node labels are unique
+sum(tree_family$tip.label == taxonomy_family$accession)
+tree_family$node.label <- paste('node', 1:length(tree_family$node.label), sep = '_')
+
+# estimate lambda
+pathogen_vec <- taxonomy_family$pathogen
+
+# check tip labels match and node labels are unique
+sum(tree_family$tip.label == taxonomy_family$accession)
+tree_family$node.label <- paste('node', 1:length(tree_family$node.label), sep = '_')
+
+# estimate delta statistic
+pathogen_vec <- taxonomy_family$pathogen
+
+tree_family$edge.length[tree_family$edge.length==0] <- quantile(tree_family$edge.length,0.1)*0.1
+
+deltaA_family <- delta(pathogen_vec,tree_family,0.1,0.0589,10000,10,100)
+
+# calculate random deltas for family
+random_delta <- tibble(boot_num = 1:n_boots)
+random_delta$trait = NA
+
+# create randomly sampled pathogen vector
+for(i in 1:n_boots){
+  random_delta$trait[[i]] <- data.frame(trait = sample(pathogen_vec))
+}
+
+# parallelise calculation
+plan(multisession, workers = 3)
+
+random_delta <- mutate(random_delta, output = furrr::future_map(trait, ~delta(.x$trait, tree_family, 0.1,0.0589,10000,10,10), .options = furrr_options(seed = 42)))
+
+random_delta <- select(random_delta, boot_num, output) %>% unnest(output)
+
+p_value <- sum(random_delta$output>deltaA_family)/nrow(random_delta)
+boxplot(random_delta$output)
+abline(h = deltaA_family,col="red")
+
+d_family_delta <- data.frame(taxonomic_level = 'family', statistic = 'delta', value = deltaA_family, p_val = sum(random_delta$output>deltaA_family)/nrow(random_delta))
+
+d_family_delta_boot <- mutate(random_delta, taxonomic_level = 'family')
+
+```
+
+And finally at the Genus level.
+
+```{r signal_genus, eval = FALSE}
+#-------------#
+# 3. Genus ####
+#-------------#
+
+# use an family level tree
+taxonomy_genus <- taxonomy_species %>%
+  group_by(genus) %>%
+  # keep only one member of each family
+  slice_head(n = 1) %>%
+  ungroup() %>%
+  select(accession, kingdom:genus)
+# 15342 genera
+
+# subset tree to only have those genera included
+tree_genus <- keep.tip(tree, taxonomy_genus$accession)
+tree_genus
+
+# add pathogen status onto this dataframe
+d_pathogens_signal <- group_by(d_pathogens2, genus) %>%
+  tally(name = 'num_pathogens')
+# 425 familys containing pathogens
+
+taxonomy_genus <- left_join(taxonomy_genus, d_pathogens_signal) %>%
+  mutate(num_pathogens = replace_na(num_pathogens, 0),
+         pathogen = ifelse(num_pathogens == 0, 'no', 'yes'))
+group_by(taxonomy_genus, pathogen) %>%
+  tally()
+
+# reorder data frame
+taxonomy_genus <- left_join(tibble(accession = tree_genus$tip.label), taxonomy_genus) %>%
+  data.frame()
+
+# check tip labels match and node labels are unique
+sum(tree_genus$tip.label == taxonomy_genus$accession)
+tree_genus$node.label <- paste('node', 1:length(tree_genus$node.label), sep = '_')
+
+# estimate lambda
+pathogen_vec <- taxonomy_genus$pathogen
+
+# check tip labels match and node labels are unique
+sum(tree_genus$tip.label == taxonomy_genus$accession)
+tree_genus$node.label <- paste('node', 1:length(tree_genus$node.label), sep = '_')
+
+# estimate delta statistic
+pathogen_vec <- taxonomy_genus$pathogen
+
+tree_genus$edge.length[tree_genus$edge.length==0] <- quantile(tree_genus$edge.length,0.1)*0.1
+
+deltaA_genus <- delta(pathogen_vec,tree_genus,0.1,0.0589,10000,10,100)
+
+# calculate random deltas for genus
+random_delta <- tibble(boot_num = 1:n_boots)
+random_delta$trait = NA
+
+# create randomly sampled pathogen vector
+for(i in 1:n_boots){
+  random_delta$trait[[i]] <- data.frame(trait = sample(pathogen_vec))
+}
+
+plan(multisession, workers = 3)
+
+random_delta <- mutate(random_delta, output = furrr::future_map(trait, ~delta(.x$trait, tree_genus, 0.1,0.0589,10000,10,10), .options = furrr_options(seed = 42)))
+
+random_delta <- select(random_delta, boot_num, output) %>% unnest(output)
+
+p_value <- sum(random_delta$output>deltaA_genus)/nrow(random_delta)
+boxplot(random_delta$output)
+abline(h = deltaA_genus,col="red")
+
+d_genus_delta <- data.frame(taxonomic_level = 'genus', statistic = 'delta', value = deltaA_genus, p_val = sum(random_delta$output>deltaA_genus)/nrow(random_delta))
+
+d_genus_delta_boot <- mutate(random_delta, taxonomic_level = 'genus')
+
+```
+
+### Visualise and check phylogenetic signal
+
+We can look at the distribution of delta statistics at each phylogenetic level and then reproduce Table 2.
+
+```{r loading_signal, echo=FALSE}
+d_order_delta <- read.csv('../data/order_delta.csv')
+d_order_delta_boot <- read.csv('../data/order_delta_bootstraps.csv')
+
+d_family_delta <- read.csv('../data/family_delta.csv')
+d_family_delta_boot <- read.csv('../data/family_delta_bootstraps.csv')
+
+d_genus_delta <- read.csv('../data/genus_delta.csv')
+d_genus_delta_boot <- read.csv('../data/genus_delta_bootstraps.csv')
+
+
+```
+
+```{r plot_signal, fig.height=4, fig.width=10}
+# bind dataframe together across taxonomic levels
+d_signal <- bind_rows(d_order_delta, d_family_delta, d_genus_delta)
+d_boots <- bind_rows(d_order_delta_boot, d_family_delta_boot, d_genus_delta_boot)
+
+# make plot showing the random distribution of delta statistics
+ggplot() +
+  geom_histogram(aes(output), fill = 'light grey', col = 'black', d_boots) +
+  facet_wrap(~taxonomic_level, scales = 'free') +
+  theme_bw(base_size = 14) +
+  geom_vline(aes(xintercept = value), col = 'red', d_signal)
+
+# recreate Table 2.
+
+# add columns do data
+d_genus <- d_genus_delta %>%
+  mutate(total_tree_tips = 15342,
+         total_pathogens = 425)
+d_family <- d_family_delta %>%
+  mutate(total_tree_tips = 3650,
+         total_pathogens = 131)
+d_order <- d_order_delta %>%
+  mutate(total_tree_tips = 1460,
+         total_pathogens = 69)
+
+d <- bind_rows(d_order, d_family, d_genus)
+
+table1 <- select(d, taxonomic_level, total_tree_tips, total_pathogens, value, p_val) %>%
+  mutate(., value = round(value, 2)) %>%
+  gt() %>%
+  cols_align(align = "center") %>%
+  tab_options(table.font.name = "Arial",
+              table.border.top.style = "bold",
+              table.border.bottom.style = "solid",
+              table.border.bottom.width = px(3),
+              column_labels.border.top.color = "white",
+              column_labels.border.top.width = px(3),
+              column_labels.border.bottom.width = px(3),
+              data_row.padding = px(10),
+              heading.align = 'center')%>% 
+  opt_row_striping() %>%
+  cols_label(
+    taxonomic_level = md("**Taxonomic level**"),
+    total_tree_tips = md("**Size of GTDB tree**"),
+    total_pathogens = md("**Number of tips**<br />**with pathogen presence**"),
+    value = md("**delta<br />statistic**"),
+    p_val = md('**p value**'))
+
+table1
+
+#gtsave(table1,"Table_signal.png",  path = 'plots')
 
 ```
