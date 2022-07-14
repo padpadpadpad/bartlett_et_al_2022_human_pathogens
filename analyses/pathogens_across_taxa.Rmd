@@ -168,7 +168,7 @@ d_table <- d_pathogens2 %>%
   spread(., status, n) %>%
   mutate(across(2:3, replace_na, 0),
          species_total = established + putative) %>%
-  slice_max(order_by = established, n=10) %>%
+  slice_max(order_by = species_total, n=10) %>%
   dplyr::rename(., Genus = genus, Established = established, Putative = putative, Total = species_total) 
 
 table1 <- gt(d_table)

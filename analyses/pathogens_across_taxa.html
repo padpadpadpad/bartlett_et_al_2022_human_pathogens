@@ -588,7 +588,7 @@ fig3a + fig3b</code></pre>
     spread(., status, n) %&gt;%
     mutate(across(2:3, replace_na, 0), species_total = established +
         putative) %&gt;%
-    slice_max(order_by = established, n = 10) %&gt;%
+    slice_max(order_by = species_total, n = 10) %&gt;%
     dplyr::rename(., Genus = genus, Established = established,
         Putative = putative, Total = species_total)
 
@@ -611,12 +611,12 @@ table1 &lt;- table1 %&gt;%
         locations = cells_body(columns = Genus))
 
 table1  # here is our table</code></pre>
-<div id="mgdiaulyzu" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="qjqhmvqcen" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: Arial;
 }
 
-#mgdiaulyzu .gt_table {
+#qjqhmvqcen .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -641,7 +641,7 @@ table1  # here is our table</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#mgdiaulyzu .gt_heading {
+#qjqhmvqcen .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -653,7 +653,7 @@ table1  # here is our table</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#mgdiaulyzu .gt_title {
+#qjqhmvqcen .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -665,7 +665,7 @@ table1  # here is our table</code></pre>
   border-bottom-width: 0;
 }
 
-#mgdiaulyzu .gt_subtitle {
+#qjqhmvqcen .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -677,13 +677,13 @@ table1  # here is our table</code></pre>
   border-top-width: 0;
 }
 
-#mgdiaulyzu .gt_bottom_border {
+#qjqhmvqcen .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#mgdiaulyzu .gt_col_headings {
+#qjqhmvqcen .gt_col_headings {
   border-top-style: solid;
   border-top-width: 3px;
   border-top-color: #FFFFFF;
@@ -698,7 +698,7 @@ table1  # here is our table</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#mgdiaulyzu .gt_col_heading {
+#qjqhmvqcen .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -718,7 +718,7 @@ table1  # here is our table</code></pre>
   overflow-x: hidden;
 }
 
-#mgdiaulyzu .gt_column_spanner_outer {
+#qjqhmvqcen .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -730,15 +730,15 @@ table1  # here is our table</code></pre>
   padding-right: 4px;
 }
 
-#mgdiaulyzu .gt_column_spanner_outer:first-child {
+#qjqhmvqcen .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#mgdiaulyzu .gt_column_spanner_outer:last-child {
+#qjqhmvqcen .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#mgdiaulyzu .gt_column_spanner {
+#qjqhmvqcen .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 3px;
   border-bottom-color: #D3D3D3;
@@ -750,7 +750,7 @@ table1  # here is our table</code></pre>
   width: 100%;
 }
 
-#mgdiaulyzu .gt_group_heading {
+#qjqhmvqcen .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -775,7 +775,7 @@ table1  # here is our table</code></pre>
   vertical-align: middle;
 }
 
-#mgdiaulyzu .gt_empty_group_heading {
+#qjqhmvqcen .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -790,15 +790,15 @@ table1  # here is our table</code></pre>
   vertical-align: middle;
 }
 
-#mgdiaulyzu .gt_from_md > :first-child {
+#qjqhmvqcen .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#mgdiaulyzu .gt_from_md > :last-child {
+#qjqhmvqcen .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#mgdiaulyzu .gt_row {
+#qjqhmvqcen .gt_row {
   padding-top: 10px;
   padding-bottom: 10px;
   padding-left: 5px;
@@ -817,7 +817,7 @@ table1  # here is our table</code></pre>
   overflow-x: hidden;
 }
 
-#mgdiaulyzu .gt_stub {
+#qjqhmvqcen .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -830,7 +830,7 @@ table1  # here is our table</code></pre>
   padding-right: 5px;
 }
 
-#mgdiaulyzu .gt_stub_row_group {
+#qjqhmvqcen .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -844,11 +844,11 @@ table1  # here is our table</code></pre>
   vertical-align: top;
 }
 
-#mgdiaulyzu .gt_row_group_first td {
+#qjqhmvqcen .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#mgdiaulyzu .gt_summary_row {
+#qjqhmvqcen .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -858,16 +858,16 @@ table1  # here is our table</code></pre>
   padding-right: 5px;
 }
 
-#mgdiaulyzu .gt_first_summary_row {
+#qjqhmvqcen .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#mgdiaulyzu .gt_first_summary_row.thick {
+#qjqhmvqcen .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#mgdiaulyzu .gt_last_summary_row {
+#qjqhmvqcen .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -877,7 +877,7 @@ table1  # here is our table</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#mgdiaulyzu .gt_grand_summary_row {
+#qjqhmvqcen .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -887,7 +887,7 @@ table1  # here is our table</code></pre>
   padding-right: 5px;
 }
 
-#mgdiaulyzu .gt_first_grand_summary_row {
+#qjqhmvqcen .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -897,11 +897,11 @@ table1  # here is our table</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#mgdiaulyzu .gt_striped {
+#qjqhmvqcen .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#mgdiaulyzu .gt_table_body {
+#qjqhmvqcen .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -910,7 +910,7 @@ table1  # here is our table</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#mgdiaulyzu .gt_footnotes {
+#qjqhmvqcen .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -924,7 +924,7 @@ table1  # here is our table</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#mgdiaulyzu .gt_footnote {
+#qjqhmvqcen .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -933,7 +933,7 @@ table1  # here is our table</code></pre>
   padding-right: 5px;
 }
 
-#mgdiaulyzu .gt_sourcenotes {
+#qjqhmvqcen .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -947,7 +947,7 @@ table1  # here is our table</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#mgdiaulyzu .gt_sourcenote {
+#qjqhmvqcen .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -955,36 +955,36 @@ table1  # here is our table</code></pre>
   padding-right: 5px;
 }
 
-#mgdiaulyzu .gt_left {
+#qjqhmvqcen .gt_left {
   text-align: left;
 }
 
-#mgdiaulyzu .gt_center {
+#qjqhmvqcen .gt_center {
   text-align: center;
 }
 
-#mgdiaulyzu .gt_right {
+#qjqhmvqcen .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#mgdiaulyzu .gt_font_normal {
+#qjqhmvqcen .gt_font_normal {
   font-weight: normal;
 }
 
-#mgdiaulyzu .gt_font_bold {
+#qjqhmvqcen .gt_font_bold {
   font-weight: bold;
 }
 
-#mgdiaulyzu .gt_font_italic {
+#qjqhmvqcen .gt_font_italic {
   font-style: italic;
 }
 
-#mgdiaulyzu .gt_super {
+#qjqhmvqcen .gt_super {
   font-size: 65%;
 }
 
-#mgdiaulyzu .gt_two_val_uncert {
+#qjqhmvqcen .gt_two_val_uncert {
   display: inline-block;
   line-height: 1em;
   text-align: right;
@@ -993,31 +993,31 @@ table1  # here is our table</code></pre>
   margin-left: 0.1em;
 }
 
-#mgdiaulyzu .gt_footnote_marks {
+#qjqhmvqcen .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#mgdiaulyzu .gt_asterisk {
+#qjqhmvqcen .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#mgdiaulyzu .gt_slash_mark {
+#qjqhmvqcen .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#mgdiaulyzu .gt_fraction_numerator {
+#qjqhmvqcen .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#mgdiaulyzu .gt_fraction_denominator {
+#qjqhmvqcen .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -1056,34 +1056,34 @@ table1  # here is our table</code></pre>
 <td class="gt_row gt_center gt_striped">35</td>
 <td class="gt_row gt_center gt_striped">11</td>
 <td class="gt_row gt_center gt_striped">46</td></tr>
-    <tr><td class="gt_row gt_center" style="font-style: italic;">Staphylococcus</td>
-<td class="gt_row gt_center">28</td>
-<td class="gt_row gt_center">3</td>
-<td class="gt_row gt_center">31</td></tr>
-    <tr><td class="gt_row gt_center gt_striped" style="font-style: italic;">Prevotella</td>
-<td class="gt_row gt_center gt_striped">26</td>
-<td class="gt_row gt_center gt_striped">10</td>
-<td class="gt_row gt_center gt_striped">36</td></tr>
+    <tr><td class="gt_row gt_center" style="font-style: italic;">Prevotella</td>
+<td class="gt_row gt_center">26</td>
+<td class="gt_row gt_center">10</td>
+<td class="gt_row gt_center">36</td></tr>
+    <tr><td class="gt_row gt_center gt_striped" style="font-style: italic;">Staphylococcus</td>
+<td class="gt_row gt_center gt_striped">28</td>
+<td class="gt_row gt_center gt_striped">3</td>
+<td class="gt_row gt_center gt_striped">31</td></tr>
     <tr><td class="gt_row gt_center" style="font-style: italic;">Clostridium</td>
 <td class="gt_row gt_center">23</td>
 <td class="gt_row gt_center">7</td>
 <td class="gt_row gt_center">30</td></tr>
-    <tr><td class="gt_row gt_center gt_striped" style="font-style: italic;">Acinetobacter</td>
+    <tr><td class="gt_row gt_center gt_striped" style="font-style: italic;">Bacteroides</td>
 <td class="gt_row gt_center gt_striped">20</td>
-<td class="gt_row gt_center gt_striped">0</td>
-<td class="gt_row gt_center gt_striped">20</td></tr>
-    <tr><td class="gt_row gt_center" style="font-style: italic;">Bacteroides</td>
-<td class="gt_row gt_center">20</td>
-<td class="gt_row gt_center">7</td>
-<td class="gt_row gt_center">27</td></tr>
+<td class="gt_row gt_center gt_striped">7</td>
+<td class="gt_row gt_center gt_striped">27</td></tr>
+    <tr><td class="gt_row gt_center" style="font-style: italic;">Actinomyces</td>
+<td class="gt_row gt_center">16</td>
+<td class="gt_row gt_center">10</td>
+<td class="gt_row gt_center">26</td></tr>
     <tr><td class="gt_row gt_center gt_striped" style="font-style: italic;">Burkholderia</td>
 <td class="gt_row gt_center gt_striped">20</td>
 <td class="gt_row gt_center gt_striped">5</td>
 <td class="gt_row gt_center gt_striped">25</td></tr>
-    <tr><td class="gt_row gt_center" style="font-style: italic;">Rickettsia</td>
-<td class="gt_row gt_center">20</td>
-<td class="gt_row gt_center">2</td>
-<td class="gt_row gt_center">22</td></tr>
+    <tr><td class="gt_row gt_center" style="font-style: italic;">Legionella</td>
+<td class="gt_row gt_center">18</td>
+<td class="gt_row gt_center">7</td>
+<td class="gt_row gt_center">25</td></tr>
   </tbody>
   
   
