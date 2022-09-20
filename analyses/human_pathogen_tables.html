@@ -11,7 +11,7 @@
 
 <meta name="author" content="Daniel Padfield" />
 
-<meta name="date" content="2022-03-07" />
+<meta name="date" content="2022-09-20" />
 
 <title>Reading in and manipulating the list of bacterial human pathogens from Bartlett et al. 2022 in R</title>
 
@@ -440,7 +440,7 @@ pre code {
 
 <h1 class="title toc-ignore">Reading in and manipulating the list of bacterial human pathogens from Bartlett et al. 2022 in R</h1>
 <h4 class="author">Daniel Padfield</h4>
-<h4 class="date">03/07/2022</h4>
+<h4 class="date">September 20, 2022</h4>
 
 </div>
 
@@ -448,7 +448,7 @@ pre code {
 <div id="dataset-of-bacterial-human-pathogens" class="section level2">
 <h2>Dataset of bacterial human pathogens</h2>
 <p>We present a comprehensive list of known bacterial pathogens known to cause infectious symptoms in humans. A summary of all the datasets used and produced are summarised in this document.</p>
-<p>The dataset is available on <a href="https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/tree/master/data">GitHub</a>, but to allow the code to fit cleanly in these walkthroughs we created a shortened URL for the file (<a href="https://shorturl.at/hiwy7" class="uri">https://shorturl.at/hiwy7</a>)</p>
+<p>The dataset is available on <a href="https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/tree/master/data">GitHub</a>.</p>
 <div id="load-in-packages" class="section level3">
 <h3>Load in packages</h3>
 <p>First we will load in the R packages used in the script.</p>
@@ -471,10 +471,10 @@ library(janitor)</code></pre>
 <li>source: source of the data. Here is <code>taylor</code></li>
 </ul>
 <pre class="r"><code># set url
-url &lt;- &quot;https://shorturl.at/hiwy7&quot;
+url &lt;- &quot;https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/raw/master/data/bacteria_human_pathogens.xlsx&quot;
 
 # read in Taylor et al dataset from GitHub
-d_taylor &lt;- rio::import(url, sheet = &quot;1 Taylor et al&quot;, range = &quot;A1:F529&quot;) %&gt;%
+d_taylor &lt;- rio::import(url, sheet = &quot;Tab 1 Taylor et al&quot;, range = &quot;A1:F529&quot;) %&gt;%
     clean_names() %&gt;%
     mutate(source = &quot;taylor&quot;) %&gt;%
     rename(original_description_and_or_relevant_clinical_description = x5,
@@ -503,7 +503,7 @@ head(select(d_taylor, -original_description_and_or_relevant_clinical_description
 <li>source: source of the data. Here is <code>munson</code></li>
 </ul>
 <pre class="r"><code># read in Munson &amp; Carroll dataset from GitHub
-d_munson &lt;- rio::import(url, sheet = &quot;2 Munson and Carroll&quot;,
+d_munson &lt;- rio::import(url, sheet = &quot;Tab 2 Munson and Carroll&quot;,
     range = &quot;A1:E86&quot;) %&gt;%
     janitor::clean_names() %&gt;%
     mutate(source = &quot;munson&quot;)
@@ -531,7 +531,7 @@ head(select(d_munson, -original_description_and_or_relevant_clinical_description
 <li>source: source of the data. Here is <code>ijsem</code></li>
 </ul>
 <pre class="r"><code># read in ijsem dataset from GitHub
-d_ijsem &lt;- rio::import(url, sheet = &quot;3 IJSEM&quot;, range = &quot;A1:F347&quot;) %&gt;%
+d_ijsem &lt;- rio::import(url, sheet = &quot;Tab 3 IJSEM&quot;, range = &quot;A1:F347&quot;) %&gt;%
     janitor::clean_names() %&gt;%
     mutate(source = &quot;ijsem&quot;)
 
@@ -557,7 +557,8 @@ head(select(d_ijsem, -original_description_and_or_relevant_clinical_description)
 <li>source: source of the data. Here is <code>scholar</code></li>
 </ul>
 <pre class="r"><code># read in google scholar dataset from GitHub
-d_scholar &lt;- rio::import(url, sheet = &quot;4 Google Scholar&quot;, range = &quot;A1:E261&quot;) %&gt;%
+d_scholar &lt;- rio::import(url, sheet = &quot;Tab 4 Google Scholar&quot;,
+    range = &quot;A1:E261&quot;) %&gt;%
     janitor::clean_names() %&gt;%
     mutate(source = &quot;google_scholar&quot;)
 
@@ -583,7 +584,7 @@ head(select(d_scholar, -original_description_and_or_relevant_clinical_descriptio
 <li>source: source of the data. Here is <code>shaw</code></li>
 </ul>
 <pre class="r"><code># read in google scholar dataset from GitHub
-d_shaw &lt;- rio::import(url, sheet = &quot;5 Shaw et al&quot;, range = &quot;A1:E295&quot;) %&gt;%
+d_shaw &lt;- rio::import(url, sheet = &quot;Tab 5 Shaw et al&quot;, range = &quot;A1:E295&quot;) %&gt;%
     janitor::clean_names() %&gt;%
     mutate(source = &quot;shaw&quot;)
 
@@ -615,7 +616,7 @@ nrow(d_all)</code></pre>
 <li>status: whether the pathogen is Established or Putative</li>
 <li>reference: reference of where the pathogen was described</li>
 </ul>
-<pre class="r"><code>d_all &lt;- rio::import(url, sheet = &quot;Full List&quot;, range = &quot;A1:J1514&quot;) %&gt;%
+<pre class="r"><code>d_all &lt;- rio::import(url, sheet = &quot;Tab 6 Full List&quot;, range = &quot;A1:J1514&quot;) %&gt;%
     janitor::clean_names()
 
 select(d_all, -reference) %&gt;%

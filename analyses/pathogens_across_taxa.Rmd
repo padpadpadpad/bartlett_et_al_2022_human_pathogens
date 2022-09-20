@@ -1,7 +1,7 @@
 ---
 title: "Looking at the number of bacterial human pathogens across taxa."
 author: "Daniel Padfield"
-date: "04/07/2022"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output: 
   html_document:
     code_folding: show
@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, tidy.opts=list(width.cutoff=
 
 We present a comprehensive list of known bacterial pathogens known to cause infectious symptoms in humans. A summary of all the datasets used and produced are summarised in this document.
 
-The dataset is available on [GitHub](https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/tree/master/data), but to allow the code to fit cleanly in these walkthroughs we created a shortened URL for the file (https://shorturl.at/hiwy7)
+The dataset is available on [GitHub](https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/tree/master/data).
 
 This work-through reads in the final list and then reproduces Figure 2, Figure 3, and Table 1 from the manuscript.
 
@@ -36,9 +36,9 @@ Next we will load in full dataset.
 
 ```{r load_data}
 # set url
-url <- "https://shorturl.at/hiwy7"
+url <- "https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/raw/master/data/bacteria_human_pathogens.xlsx"
 
-d_pathogens <- rio::import(url, sheet = 'Full List', range = 'A1:J1514') %>%
+d_pathogens <- rio::import(url, sheet = 'Tab 6 Full List', range = 'A1:J1514') %>%
   janitor::clean_names()
 
 select(d_pathogens, -reference) %>%

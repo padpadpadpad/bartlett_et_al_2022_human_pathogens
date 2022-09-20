@@ -11,7 +11,7 @@
 
 <meta name="author" content="Daniel Padfield" />
 
-<meta name="date" content="2022-04-07" />
+<meta name="date" content="2022-09-20" />
 
 <title>Looking at the number of bacterial human pathogens across taxa.</title>
 
@@ -440,7 +440,7 @@ pre code {
 
 <h1 class="title toc-ignore">Looking at the number of bacterial human pathogens across taxa.</h1>
 <h4 class="author">Daniel Padfield</h4>
-<h4 class="date">04/07/2022</h4>
+<h4 class="date">September 20, 2022</h4>
 
 </div>
 
@@ -448,7 +448,7 @@ pre code {
 <div id="dataset-of-bacterial-human-pathogens" class="section level2">
 <h2>Dataset of bacterial human pathogens</h2>
 <p>We present a comprehensive list of known bacterial pathogens known to cause infectious symptoms in humans. A summary of all the datasets used and produced are summarised in this document.</p>
-<p>The dataset is available on <a href="https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/tree/master/data">GitHub</a>, but to allow the code to fit cleanly in these walkthroughs we created a shortened URL for the file (<a href="https://shorturl.at/hiwy7" class="uri">https://shorturl.at/hiwy7</a>)</p>
+<p>The dataset is available on <a href="https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/tree/master/data">GitHub</a>.</p>
 <p>This work-through reads in the final list and then reproduces Figure 2, Figure 3, and Table 1 from the manuscript.</p>
 <div id="load-in-packages-and-data" class="section level3">
 <h3>Load in packages and data</h3>
@@ -461,9 +461,9 @@ library(gt)
 library(rio)</code></pre>
 <p>Next we will load in full dataset.</p>
 <pre class="r"><code># set url
-url &lt;- &quot;https://shorturl.at/hiwy7&quot;
+url &lt;- &quot;https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/raw/master/data/bacteria_human_pathogens.xlsx&quot;
 
-d_pathogens &lt;- rio::import(url, sheet = &quot;Full List&quot;,
+d_pathogens &lt;- rio::import(url, sheet = &quot;Tab 6 Full List&quot;,
     range = &quot;A1:J1514&quot;) %&gt;%
     janitor::clean_names()
 
@@ -611,12 +611,12 @@ table1 &lt;- table1 %&gt;%
         locations = cells_body(columns = Genus))
 
 table1  # here is our table</code></pre>
-<div id="qjqhmvqcen" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="jbqwqsxchm" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: Arial;
 }
 
-#qjqhmvqcen .gt_table {
+#jbqwqsxchm .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -641,7 +641,7 @@ table1  # here is our table</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#qjqhmvqcen .gt_heading {
+#jbqwqsxchm .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -653,7 +653,7 @@ table1  # here is our table</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#qjqhmvqcen .gt_title {
+#jbqwqsxchm .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -665,7 +665,7 @@ table1  # here is our table</code></pre>
   border-bottom-width: 0;
 }
 
-#qjqhmvqcen .gt_subtitle {
+#jbqwqsxchm .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -677,13 +677,13 @@ table1  # here is our table</code></pre>
   border-top-width: 0;
 }
 
-#qjqhmvqcen .gt_bottom_border {
+#jbqwqsxchm .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#qjqhmvqcen .gt_col_headings {
+#jbqwqsxchm .gt_col_headings {
   border-top-style: solid;
   border-top-width: 3px;
   border-top-color: #FFFFFF;
@@ -698,7 +698,7 @@ table1  # here is our table</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#qjqhmvqcen .gt_col_heading {
+#jbqwqsxchm .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -718,7 +718,7 @@ table1  # here is our table</code></pre>
   overflow-x: hidden;
 }
 
-#qjqhmvqcen .gt_column_spanner_outer {
+#jbqwqsxchm .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -730,15 +730,15 @@ table1  # here is our table</code></pre>
   padding-right: 4px;
 }
 
-#qjqhmvqcen .gt_column_spanner_outer:first-child {
+#jbqwqsxchm .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#qjqhmvqcen .gt_column_spanner_outer:last-child {
+#jbqwqsxchm .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#qjqhmvqcen .gt_column_spanner {
+#jbqwqsxchm .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 3px;
   border-bottom-color: #D3D3D3;
@@ -750,7 +750,7 @@ table1  # here is our table</code></pre>
   width: 100%;
 }
 
-#qjqhmvqcen .gt_group_heading {
+#jbqwqsxchm .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -775,7 +775,7 @@ table1  # here is our table</code></pre>
   vertical-align: middle;
 }
 
-#qjqhmvqcen .gt_empty_group_heading {
+#jbqwqsxchm .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -790,15 +790,15 @@ table1  # here is our table</code></pre>
   vertical-align: middle;
 }
 
-#qjqhmvqcen .gt_from_md > :first-child {
+#jbqwqsxchm .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#qjqhmvqcen .gt_from_md > :last-child {
+#jbqwqsxchm .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#qjqhmvqcen .gt_row {
+#jbqwqsxchm .gt_row {
   padding-top: 10px;
   padding-bottom: 10px;
   padding-left: 5px;
@@ -817,7 +817,7 @@ table1  # here is our table</code></pre>
   overflow-x: hidden;
 }
 
-#qjqhmvqcen .gt_stub {
+#jbqwqsxchm .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -830,7 +830,7 @@ table1  # here is our table</code></pre>
   padding-right: 5px;
 }
 
-#qjqhmvqcen .gt_stub_row_group {
+#jbqwqsxchm .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -844,11 +844,11 @@ table1  # here is our table</code></pre>
   vertical-align: top;
 }
 
-#qjqhmvqcen .gt_row_group_first td {
+#jbqwqsxchm .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#qjqhmvqcen .gt_summary_row {
+#jbqwqsxchm .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -858,16 +858,16 @@ table1  # here is our table</code></pre>
   padding-right: 5px;
 }
 
-#qjqhmvqcen .gt_first_summary_row {
+#jbqwqsxchm .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#qjqhmvqcen .gt_first_summary_row.thick {
+#jbqwqsxchm .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#qjqhmvqcen .gt_last_summary_row {
+#jbqwqsxchm .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -877,7 +877,7 @@ table1  # here is our table</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#qjqhmvqcen .gt_grand_summary_row {
+#jbqwqsxchm .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -887,7 +887,7 @@ table1  # here is our table</code></pre>
   padding-right: 5px;
 }
 
-#qjqhmvqcen .gt_first_grand_summary_row {
+#jbqwqsxchm .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -897,11 +897,11 @@ table1  # here is our table</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#qjqhmvqcen .gt_striped {
+#jbqwqsxchm .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#qjqhmvqcen .gt_table_body {
+#jbqwqsxchm .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -910,7 +910,7 @@ table1  # here is our table</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#qjqhmvqcen .gt_footnotes {
+#jbqwqsxchm .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -924,7 +924,7 @@ table1  # here is our table</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#qjqhmvqcen .gt_footnote {
+#jbqwqsxchm .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -933,7 +933,7 @@ table1  # here is our table</code></pre>
   padding-right: 5px;
 }
 
-#qjqhmvqcen .gt_sourcenotes {
+#jbqwqsxchm .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -947,7 +947,7 @@ table1  # here is our table</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#qjqhmvqcen .gt_sourcenote {
+#jbqwqsxchm .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -955,36 +955,36 @@ table1  # here is our table</code></pre>
   padding-right: 5px;
 }
 
-#qjqhmvqcen .gt_left {
+#jbqwqsxchm .gt_left {
   text-align: left;
 }
 
-#qjqhmvqcen .gt_center {
+#jbqwqsxchm .gt_center {
   text-align: center;
 }
 
-#qjqhmvqcen .gt_right {
+#jbqwqsxchm .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#qjqhmvqcen .gt_font_normal {
+#jbqwqsxchm .gt_font_normal {
   font-weight: normal;
 }
 
-#qjqhmvqcen .gt_font_bold {
+#jbqwqsxchm .gt_font_bold {
   font-weight: bold;
 }
 
-#qjqhmvqcen .gt_font_italic {
+#jbqwqsxchm .gt_font_italic {
   font-style: italic;
 }
 
-#qjqhmvqcen .gt_super {
+#jbqwqsxchm .gt_super {
   font-size: 65%;
 }
 
-#qjqhmvqcen .gt_two_val_uncert {
+#jbqwqsxchm .gt_two_val_uncert {
   display: inline-block;
   line-height: 1em;
   text-align: right;
@@ -993,31 +993,31 @@ table1  # here is our table</code></pre>
   margin-left: 0.1em;
 }
 
-#qjqhmvqcen .gt_footnote_marks {
+#jbqwqsxchm .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#qjqhmvqcen .gt_asterisk {
+#jbqwqsxchm .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#qjqhmvqcen .gt_slash_mark {
+#jbqwqsxchm .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#qjqhmvqcen .gt_fraction_numerator {
+#jbqwqsxchm .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#qjqhmvqcen .gt_fraction_denominator {
+#jbqwqsxchm .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;

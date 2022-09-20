@@ -1,7 +1,7 @@
 ---
 title: "Reading in and manipulating the list of bacterial human pathogens from Bartlett et al. 2022 in R"
 author: "Daniel Padfield"
-date: "03/07/2022"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output: 
   html_document:
     code_folding: show
@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, tidy.opts=list(width.cutoff=
 
 We present a comprehensive list of known bacterial pathogens known to cause infectious symptoms in humans. A summary of all the datasets used and produced are summarised in this document.
 
-The dataset is available on [GitHub](https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/tree/master/data), but to allow the code to fit cleanly in these walkthroughs we created a shortened URL for the file (https://shorturl.at/hiwy7)
+The dataset is available on [GitHub](https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/tree/master/data).
 
 ### Load in packages
 
@@ -44,10 +44,10 @@ After initial cleaning (see code below), the column names in this spreadsheet ar
 
 ```{r taylor, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 # set url
-url <- "https://shorturl.at/hiwy7"
+url <- "https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/raw/master/data/bacteria_human_pathogens.xlsx"
 
 # read in Taylor et al dataset from GitHub
-d_taylor <- rio::import(url, sheet = '1 Taylor et al', range = 'A1:F529') %>%
+d_taylor <- rio::import(url, sheet = 'Tab 1 Taylor et al', range = 'A1:F529') %>%
   clean_names() %>%
   mutate(source = 'taylor') %>%
   rename(original_description_and_or_relevant_clinical_description = x5,
@@ -72,7 +72,7 @@ After initial cleaning (see code below), the column names in this spreadsheet ar
 
 ```{r munson}
 # read in Munson & Carroll dataset from GitHub
-d_munson <- rio::import(url, sheet = '2 Munson and Carroll', range = 'A1:E86') %>%
+d_munson <- rio::import(url, sheet = 'Tab 2 Munson and Carroll', range = 'A1:E86') %>%
   janitor::clean_names() %>%
   mutate(source = 'munson')
 
@@ -95,7 +95,7 @@ After initial cleaning (see code below), the column names in this spreadsheet ar
 
 ```{r ijsem}
 # read in ijsem dataset from GitHub
-d_ijsem <- rio::import(url, sheet = '3 IJSEM', range = 'A1:F347') %>%
+d_ijsem <- rio::import(url, sheet = 'Tab 3 IJSEM', range = 'A1:F347') %>%
   janitor::clean_names() %>%
   mutate(source = 'ijsem')
 
@@ -116,7 +116,7 @@ After initial cleaning (see code below), the column names in this spreadsheet ar
 
 ```{r google_scholar}
 # read in google scholar dataset from GitHub
-d_scholar <- rio::import(url, sheet = '4 Google Scholar', range = 'A1:E261') %>%
+d_scholar <- rio::import(url, sheet = 'Tab 4 Google Scholar', range = 'A1:E261') %>%
   janitor::clean_names() %>%
   mutate(source = 'google_scholar')
 
@@ -137,7 +137,7 @@ After initial cleaning (see code below), the column names in this spreadsheet ar
 
 ```{r shaw_et_al}
 # read in google scholar dataset from GitHub
-d_shaw <- rio::import(url, sheet = '5 Shaw et al', range = 'A1:E295') %>%
+d_shaw <- rio::import(url, sheet = 'Tab 5 Shaw et al', range = 'A1:E295') %>%
   janitor::clean_names() %>%
   mutate(source = 'shaw')
 
@@ -170,7 +170,7 @@ After initial cleaning (see code below), the column names in this spreadsheet ar
 - reference: reference of where the pathogen was described
 
 ```{r all}
-d_all <- rio::import(url, sheet = 'Full List', range = 'A1:J1514') %>%
+d_all <- rio::import(url, sheet = 'Tab 6 Full List', range = 'A1:J1514') %>%
   janitor::clean_names()
 
 select(d_all, -reference) %>%
