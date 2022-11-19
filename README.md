@@ -6,7 +6,7 @@ This repository contains all the data and code to recreate the analyses and figu
 
 **A comprehensive list of bacterial pathogens infecting humans**. 2022. Abigail Bartlett, Daniel Padfield, Luke Lear, Richard Bendall and Michiel Vos. Microbiology. DOI: 10.1099/mic.0.001269
 
-This repository has been archived on Zenodo: DOI: 
+This repository has been archived on Zenodo: [![DOI](https://zenodo.org/badge/510108514.svg)](https://zenodo.org/badge/latestdoi/510108514) 
 
 ## Outline of dataset
 
