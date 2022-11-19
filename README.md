@@ -1,5 +1,13 @@
 # This repository contains the bacterial human pathogen dataset compiled by Bartlett _et al._ 2022
 
+## Linked publication and DOIs
+
+This repository contains all the data and code to recreate the analyses and figures in the following manuscript:
+
+**A comprehensive list of bacterial pathogens infecting humans**. 2022. Abigail Bartlett, Daniel Padfield, Luke Lear, Richard Bendall and Michiel Vos. Microbiology. DOI: 10.1099/mic.0.001269
+
+This repository has been archived on Zenodo: DOI: 
+
 ## Outline of dataset
 
 Through combining a pragmatic definition of pathogenicity with an extensive search strategy, we report 1513 bacterial pathogens known to infect humans described pre-2021. Of these, 73% were regarded as established (have infected at least three persons in three or more references) and 27% as putative (less than three known cases). Pathogen species belong to 10 Phyla and 24 Classes scattered throughout the bacterial phylogeny. 
@@ -9,6 +17,7 @@ Through combining a pragmatic definition of pathogenicity with an extensive sear
 ### For general use
 
 - The dataset can be downloaded using the following [link](https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/raw/master/data/bacteria_human_pathogens.xlsx). Information of what the different sheets are and what the columns mean in each sheet can be found [here](https://htmlpreview.github.io/?https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/blob/master/analyses/human_pathogen_tables.html)
+- The file **data/bacteria_human_pathogens.xlsx** is the **Data S1** in the Microbiology article.
 
 There are seven sheets in the Excel file:
 

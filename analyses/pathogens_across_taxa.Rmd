@@ -123,7 +123,7 @@ fig3a <- ggplot() +
        fill = 'Pathogen status') +
   coord_flip() +
   scale_x_discrete(limits=rev) +
-  ggtitle('a) number of genera housing at least\none pathogenic species')
+  ggtitle('a) Number of genera housing at least\none pathogenic species')
 
 # create Figure 3b
 species2 <- select(species, -species_total)%>%
@@ -152,9 +152,14 @@ fig3b <- ggplot() +
   scale_fill_manual(values= c('azure4', 'deepskyblue2'))+
   coord_flip() +
   scale_x_discrete(limits=rev)+
-  ggtitle('b) number of bacterial pathogens in each class\n')
+  ggtitle('b) Number of bacterial pathogens in each class\n')
 
 fig3a + fig3b
+
+# save out
+ggsave('Figure_3.png', last_plot(), height = 7, width = 13)
+ggsave('Figure_3.pdf', last_plot(), height = 7, width = 13)
+
 ```
 
 We can then recreate Table 1 for the 10 genera which contain the most pathogenic species.

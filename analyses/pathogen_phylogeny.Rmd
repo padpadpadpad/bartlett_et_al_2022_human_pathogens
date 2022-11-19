@@ -229,7 +229,7 @@ d_meta2 <- filter(d_meta, !is.na(n))
 tree_plot2 <- tree_plot %<+% d_meta2 +
   new_scale_color() +
   geom_tippoint(aes(col = n), position = position_nudge(1), size = 4, na.rm = TRUE) +
-  scale_colour_viridis_c('Number of pathogen\nspecies in each GTDB\nClass', na.value=NA) +
+  scale_colour_viridis_c('Number of pathogen\nspecies in each GTDB\nclass', na.value=NA) +
   geom_tiplab(aes(subset=(label %in% d_meta2$ncbi_class)), offset = 2) +
   theme(plot.margin = margin(0, 0, 0, 0, "cm"),
         legend.box.margin = margin(0, 0, 0, 2, "cm"),
