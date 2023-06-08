@@ -31,7 +31,7 @@ There are seven sheets in the Excel file:
 
 ### Specifically in R
 
-- The whole list with higher taxonomy can be downloaded using the code `rio::import(https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/raw/master/data/bacteria_human_pathogens.xlsx, sheet = 'Tab 6 Full List', range = 'A1:J1514')`. Other methods to download other parts of the Excel spreadsheet directly in R can be found [here](https://htmlpreview.github.io/?https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/blob/master/analyses/human_pathogen_tables.html)
+- The whole list with higher taxonomy can be downloaded using the code `rio::import("https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/raw/master/data/bacteria_human_pathogens.xlsx", sheet = 'Tab 6 Full List', range = 'A1:J1514')`. Other methods to download other parts of the Excel spreadsheet directly in R can be found [here](https://htmlpreview.github.io/?https://github.com/padpadpadpad/bartlett_et_al_2022_human_pathogens/blob/master/analyses/human_pathogen_tables.html)
 
 ## Reproducing figures in the manuscript
 
