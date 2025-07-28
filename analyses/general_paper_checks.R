@@ -5,10 +5,11 @@ library(tidyverse)
 library(lubridate)
 library(rio)
 
-# set url
-url <- "https://shorturl.at/hiwy7"
-
-d_pathogens <- rio::import(url, sheet = 'Full List', range = 'A1:J1514') %>%
+d_pathogens <- readxl::read_excel(
+  'data/bacteria_human_pathogens.xlsx',
+  sheet = 'Tab 6 Full List',
+  range = 'A1:J1514'
+) %>%
   janitor::clean_names()
 
 select(d_pathogens, -reference) %>%

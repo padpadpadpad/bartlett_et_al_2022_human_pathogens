@@ -3,3 +3,7 @@
 .Rdata
 .httr-oauth
 .DS_Store
+analyses/Archive.zip
+analyses/bac120_metadata_r207.tsv
+analyses/tmp.tar.gz
+data/*.csv
